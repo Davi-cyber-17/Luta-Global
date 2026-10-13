@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#05071a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Luta Global</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- MENU -->
+  <section id="screen-menu" class="screen active">
+    <h1 class="logo">Luta <span>Global</span></h1>
+    <p class="sub">Cavaleiros cibernéticos em plataformas flutuantes. Batalhas de 2 a 6 jogadores.</p>
+    <div class="menu-buttons">
+      <button class="btn big solid" id="btn-local"><b>Modo Local</b><small>Mesmo aparelho, com bots</small></button>
+      <button class="btn big mag" id="btn-online"><b>Modo Online</b><small>Salas entre PC, celular e tablet</small></button>
+    </div>
+  </section>
+
+  <!-- LOCAL -->
+  <section id="screen-local" class="screen">
+    <h2 class="title">Modo Local</h2>
+    <div class="panel">
+      <div class="row">
+        <span>Total de jogadores</span>
+        <div class="stepper">
+          <button data-k="total" data-step="-1" aria-label="Menos jogadores">−</button>
+          <b id="v-total">4</b>
+          <button data-k="total" data-step="1" aria-label="Mais jogadores">+</button>
+        </div>
+      </div>
+      <div class="row">
+        <span>Jogadores humanos</span>
+        <div class="stepper">
+          <button data-k="humans" data-step="-1" aria-label="Menos humanos">−</button>
+          <b id="v-humans">2</b>
+          <button data-k="humans" data-step="1" aria-label="Mais humanos">+</button>
+        </div>
+      </div>
+      <p class="hint">Os cavaleiros restantes são bots. A mira é automática: você só se move e atira. No celular, o Jogador 1 usa os controles na tela.</p>
+      <ul id="ctrl-list" class="players"></ul>
+    </div>
+    <div class="actions">
+      <button class="btn big solid" id="btn-local-start"><b>Começar batalha</b></button>
+      <button class="btn ghost" data-back>Voltar</button>
+    </div>
+  </section>
+
+  <!-- ONLINE -->
+  <section id="screen-online" class="screen">
+    <h2 class="title">Modo Online</h2>
+    <div class="panel">
+      <p class="hint">Funciona entre computador, celular e tablet. Todos precisam abrir o mesmo endereço deste site.</p>
+      <label class="field">Seu nome
+        <input id="name-in" maxlength="12" placeholder="Ex.: Sir Lancelot" autocomplete="off">
+      </label>
+      <button class="btn big solid" id="btn-create"><b>Criar sala</b></button>
+      <div class="divider"><span>ou entre com um código</span></div>
+      <div class="join-row">
+        <input id="code-in" class="mono" maxlength="4" placeholder="ABCD" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Código da sala">
+        <button class="btn mag" id="btn-join"><b>Entrar</b></button>
+      </div>
+      <p id="online-status" class="status" role="status"></p>
+    </div>
+    <button class="btn ghost" data-back>Voltar</button>
+  </section>
+
+  <!-- SALA -->
+  <section id="screen-room" class="screen">
+    <h2 class="title">Sala</h2>
+    <div class="panel">
+      <div class="room-code">
+        <small>Código da sala</small>
+        <b id="room-code" class="mono">----</b>
+        <div class="room-actions">
+          <button class="btn small ghost" id="btn-copy-code">Copiar código</button>
+          <button class="btn small ghost" id="btn-copy-link">Copiar link</button>
+        </div>
+      </div>
+      <div class="row"><span>Jogadores</span><b id="room-count" class="mono">1/6</b></div>
+      <ul id="room-list" class="players"></ul>
+      <div id="host-controls">
+        <div class="row-btns">
+          <button class="btn small ghost" id="btn-add-bot">+ Bot</button>
+          <button class="btn small ghost" id="btn-del-bot">− Bot</button>
+        </div>
+        <button class="btn big solid" id="btn-room-start"><b>Começar batalha</b></button>
+        <p class="hint" id="start-hint">Precisa de pelo menos 2 jogadores.</p>
+      </div>
+      <p id="client-wait" class="hint" hidden>Aguardando o anfitrião começar a batalha…</p>
+    </div>
+    <button class="btn ghost" id="btn-room-leave">Sair da sala</button>
+  </section>
+
+  <!-- JOGO -->
+  <section id="screen-game" class="screen">
+    <div class="stage">
+      <canvas id="cv" width="960" height="540"></canvas>
+      <div class="topbar">
+        <button class="chip" id="btn-mute" aria-label="Som">Som</button>
+        <button class="chip" id="btn-fs" aria-label="Tela cheia">Tela cheia</button>
+        <button class="chip" id="btn-quit">Sair</button>
+      </div>
+      <div id="overlay" hidden>
+        <div class="over-card">
+          <h2 id="over-title">Fim de jogo</h2>
+          <button class="btn big solid" id="btn-again"><b>Jogar de novo</b></button>
+          <p id="over-wait" class="hint" hidden>Aguardando o anfitrião…</p>
+          <button class="btn ghost" id="btn-over-quit">Sair</button>
+        </div>
+      </div>
+    </div>
+    <p class="keys-hint" id="keys-hint"></p>
+    <div id="touch">
+      <div class="joy" id="joy" aria-label="Direcional"><div class="joy-knob" id="joy-knob"></div></div>
+      <button class="fire" data-dir="f" aria-label="Atirar">Atirar</button>
+    </div>
+    <p class="rotate-hint" id="rotate-hint">Dica: gire o aparelho na horizontal para ver a arena maior.</p>
+  </section>
+
+</div>
+
+<!-- PeerJS: conexão direta entre navegadores (WebRTC) para o modo online -->
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
