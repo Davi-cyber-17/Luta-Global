@@ -1,1 +1,0 @@
-# Luta-Global
